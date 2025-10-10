@@ -23,6 +23,8 @@ class PokemonViewModel(
     private val _pokemons = MutableStateFlow<List<Pokemon>>(emptyList())
     private val _filteredPokemons = MutableStateFlow<List<Pokemon>>(emptyList())
     val filteredPokemons: StateFlow<List<Pokemon>> = _filteredPokemons
+    private val _pokemonDetail = MutableStateFlow<Pokemon?>(value = null)
+    val pokemonDetail : StateFlow<Pokemon?> = _pokemonDetail
     private val _error = MutableLiveData<String?>()
     val error: LiveData<String?> = _error
     val filterOptions= FilterOptions()
@@ -84,6 +86,21 @@ class PokemonViewModel(
             filterOptions.isFiltered = true
             applyFilters()
         }
+    }
+
+    fun getCharacter(name: String) {
+        viewModelScope.launch {
+            try {
+                _pokemonDetail.value = repository.getPokemonDetailes(name = name)
+                _error.value = null
+                Log.e("view model pokemons", _pokemons.value.toString())
+
+            } catch (e: Exception) {
+                Log.e("CharacterViewModel", "Ошибка загрузки персонажа", e)
+
+            }
+        }
+
     }
 }
 

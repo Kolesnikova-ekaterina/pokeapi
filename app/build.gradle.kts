@@ -56,12 +56,16 @@ dependencies {
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+    implementation(libs.androidx.compose.foundation)
     val room_version = "2.7.2"
 
     implementation ("androidx.room:room-runtime:$room_version")
     kapt ("androidx.room:room-compiler:$room_version")
 
     implementation("com.github.skydoves:landscapist-glide:2.4.9")
+    val nav_version = "2.9.5"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

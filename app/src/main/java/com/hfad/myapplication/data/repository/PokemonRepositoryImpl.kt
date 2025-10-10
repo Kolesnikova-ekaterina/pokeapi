@@ -19,7 +19,7 @@ import kotlinx.coroutines.awaitAll
 interface PokemonRepository{
     suspend fun getPokemons(): List<Pokemon>?
     suspend fun getNextPage(): List<Pokemon>?
-    //suspend fun getPokemonDetailes(name: String): Pokemon
+    suspend fun getPokemonDetailes(name: String): Pokemon?
 }
 
 class PokemonRepositoryImpl(
@@ -97,5 +97,22 @@ class PokemonRepositoryImpl(
         }
 
         deferredDetails.awaitAll()
+    }
+
+    override suspend fun getPokemonDetailes(name: String): Pokemon?  = withContext(Dispatchers.IO){
+        if(!NetworkUtils.isNetworkAvailable(context))
+            return@withContext getCachedCharacter(name)
+
+        return@withContext fetchAndCacheCharacter(name)
+    }
+
+    private suspend fun getCachedCharacter(name: String): Pokemon? {
+        return dao.getPokemonById(name = name)?.toDomain()
+    }
+
+    private suspend fun fetchAndCacheCharacter(name: String): Pokemon? {
+        val pokemon = api.getPokemonDetails(name)
+        dao.insertPokemon(pokemon.toEntity())
+        return pokemon
     }
 }
